@@ -20,7 +20,7 @@ NEWSPIDER_MODULE = 'truelove.spiders'
 USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True  #??????????????????????
+ROBOTSTXT_OBEY = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 CONCURRENT_REQUESTS = 32
@@ -73,7 +73,7 @@ ITEM_PIPELINES = {
    # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    #'truelove.pipelines.TruelovePipeline': 300,
-   'scrapy_redis.pipelines.RedisPipeline': 900,  #??????????????????????????????
+   'scrapy_redis.pipelines.RedisPipeline': 900,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -97,7 +97,7 @@ ITEM_PIPELINES = {
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-#????????????????????????????????????????????
+
 # url 过滤 用scrapy_redis
 DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 

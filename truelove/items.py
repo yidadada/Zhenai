@@ -8,8 +8,6 @@
 import scrapy
 import redis
 
-
-
 class TrueloveItem(scrapy.Item):
     username = scrapy.Field()
     userage = scrapy.Field()

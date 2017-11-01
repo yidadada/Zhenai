@@ -11,9 +11,6 @@ class MytrueloveSpider(RedisSpider):
     name = 'mytruelove'
     allowed_domains = ['zhenai.com']
     #start_urls = ['http://search.zhenai.com/v2/search/pinterests.do?sex=1&agebegin=18&ageend=18&workcityprovince=-1&workcitycity=-1&h1=-1&h2=-1&salaryBegin=-1&salaryEnd=-1&occupation=-1&h=-1&c=-1&workcityprovince1=-1&workcitycity1=-1&constellation=-1&animals=-1&stock=-1&belief=-1&condition=66&orderby=hpf&hotIndex=0&online=']
-                #'http://search.zhenai.com/v2/search/getPinterestData.do?sex=1&agebegin=18&ageend=18&workcityprovince=10102000&workcitycity=-1&h1=-1&h2=-1&salaryBegin=-1&salaryEnd=-1&occupation=-1&h=-1&c=-1&workcityprovince1=-1&workcitycity1=-1&constellation=-1&animals=-1&stock=-1&belief=-1&condition=66&orderby=hpf&hotIndex=0&online=&currentpage=1&topSearch=false'
-
-    #??????????????????????????
     #redis_key = mytruelove:start_urls
     headers = {
         "Host": "search.zhenai.com",
@@ -52,13 +49,11 @@ class MytrueloveSpider(RedisSpider):
         start_urls = 'http://search.zhenai.com/v2/search/pinterests.do'
         yield scrapy.Request(url = start_urls,callback = self.parse_after,headers = self.headers,cookies = self.cookies)
 
-
     def parse_after(self, response):
         html =  response.body.decode('gbk')
         sex_list = ['1']
         age_list = range(18,100)
         province = {} #定义城市筛选项,使用字典是防止有数据重复
-
         with open('city.html', 'r') as f:
             html = etree.HTML(f.read())
             city_div = html.xpath('//div[@class="city_box"]')
@@ -69,7 +64,7 @@ class MytrueloveSpider(RedisSpider):
                 #print province
             for keys,values in province.items():
                 pass
-                #print keys,values
+
         base_url = 'http://search.zhenai.com/v2/search/getPinterestData.do?sex=%s&agebegin=%s&ageend=%s&workcityprovince=%s&workcitycity=%s&h1=-1&h2=-1&salaryBegin=-1&salaryEnd=-1&occupation=-1&h=-1&c=-1&workcityprovince1=-1&workcitycity1=-1&constellation=-1&animals=-1&stock=-1&belief=-1&condition=66&orderby=hpf&hotIndex=&online=&currentpage=%s&topSearch=false'
         for sex in sex_list:
             for age in age_list:
@@ -80,19 +75,15 @@ class MytrueloveSpider(RedisSpider):
                             yield scrapy.Request(url = fullurl,callback = self.parse_re,cookies = self.cookies,headers = self.headers)
 
     def parse_re(self,response):
-
         html =response.body
-        #a = re.findall(r'memberId.*(\d+?),',html)
         a = re.findall(r'memberId":(\d+?),',html)
-
-       # "memberId":107076905
-
         for ever_id in a:
             #print ever_id
             detail_url='http://album.zhenai.com/u/%s' %ever_id
             #print detail_url
             yield scrapy.Request(url = detail_url,callback = self.parse_detail,cookies = self.cookies,headers = self.headers,priority=1)
         #priority 设置队列中的优先级
+
     def parse_detail(self,response):
         detail_list = response.xpath('//section[@class="mod-brief-info bgff radius-3 bord"]')
         for detail in detail_list:
@@ -100,11 +91,9 @@ class MytrueloveSpider(RedisSpider):
             item['username']= detail.xpath('.//div[@class="brief-top p30"]/p/a[@class="name fs24"]/text()').extract()[0]
             item['userage'] = detail.xpath('.//div[@class="brief-center p20"]//tr[1]/td[1]/text()').extract()[0]
             item['userheight'] = detail.xpath('.//div[@class="brief-center p20"]//tr[1]/td[2]/text()').extract()[0]
-            #item[' userselary']= detail.xpath('.//div[@class="brief-center p20"]//tr[1]/td[3]/text()').extract()[0]
             item['age'] = detail.xpath('.//div[@class="brief-center p20"]//tr[1]/td[1]/text()').extract()[0]
             item['usereducation']= detail.xpath('.//div[@class="brief-center p20"]//tr[2]/td[2]/text()').extract()[0]
-            print item['username'],item['userage'], item['usereducation']
-
+            #print item['username'],item['userage'], item['usereducation']
             yield item
 
 
